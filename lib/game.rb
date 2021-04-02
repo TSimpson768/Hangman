@@ -29,6 +29,33 @@ class Game
   end
 
   def play
-    puts @secret_word
+    while @guesses_left.positive?
+      print_man # Print the hangman
+      print_guessed # Print the guessed word
+      user_input # Save if save is inputed, otherwise check the guess
+      break if game_won?
+    end
+    game_over # Run any game over logic, and ask to play agian
+  end
+
+  private
+
+  def print_man
+    
+  end
+
+  def print_guessed
+    
+  end
+
+  def user_input
+    
+  end
+
+  def game_won?
+  end
+
+  def game_over
+    
   end
 end
