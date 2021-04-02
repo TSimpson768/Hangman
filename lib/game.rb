@@ -46,6 +46,9 @@ class Game
 
   def print_guessed
     puts @guessed_word
+    print 'Wrong guesses:'
+    @wrong_letters.each { |letter| print " #{letter}" }
+    puts
   end
 
   def user_input
@@ -65,7 +68,12 @@ class Game
   end
 
   def game_over
-    puts @secret_word
+    puts "The secret word was #{@secret_word}"
+    if game_won?
+      puts "Congratulations! You win!"
+    else
+      puts 'Better luck next time'
+    end
   end
 
   def save_game
