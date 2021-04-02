@@ -71,7 +71,14 @@ class Game
     puts 'TODO'
   end
 
+  # Checks if the given input string is in the secret word
   def check_guess(input)
-    
+    if @secret_word.match?(input)
+      @secret_word.each_with_index { |char, index| @guessed_word[index] = char if char == input }
+    else
+      puts 'Incorrect'
+      @guesses_left -= 1
+      @wrong_letters.push(input)
+    end
   end
 end
