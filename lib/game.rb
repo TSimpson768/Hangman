@@ -41,11 +41,11 @@ class Game
   private
 
   def print_man
-    
+    puts "#{@guesses_left} wrong guesses left"
   end
 
   def print_guessed
-    
+    puts @guessed_word
   end
 
   def user_input
