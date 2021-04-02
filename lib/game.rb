@@ -23,6 +23,7 @@ class Game
   def self.new_game
     dictonary = File.new('dictonary.txt', 'r')
     cleaned_dictonary = dictonary.readlines(chomp: true).select { |word| word.length >= 5 && word.length <= 12 }
+    dictonary.close
     word = cleaned_dictonary.sample
     Game.new(word, '_' * word.length)
   end
