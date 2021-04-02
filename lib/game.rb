@@ -49,13 +49,29 @@ class Game
   end
 
   def user_input
-    
+    input = gets.chomp.downcase
+    if input == 'save'
+      save_game
+    elsif input.match(/^[a-z]{1}$/)
+      check_guess(input)
+    else
+      puts 'Invalid input'
+      user_input
+    end
   end
 
   def game_won?
   end
 
   def game_over
+    
+  end
+
+  def save_game
+    puts 'TODO'
+  end
+
+  def check_guess(input)
     
   end
 end
