@@ -41,8 +41,7 @@ class Game
 
   # Read a save file, and attempt to initialize a game from it
   def self.load_game
-    print 'Enter save name:'
-    file_name = gets.chomp + '.JSON'
+    input_save_name
     begin
       save = File.open(file_name, 'r')
       save_json = JSON.parse(save.read ,{symbolize_names: true} )
@@ -95,16 +94,9 @@ class Game
     end
   end
 
-  # Saves are serialized in JSON format. I'm thinking
-  # { "secret_word": @secret_word
-  #   "guessed_word": @guessed_word
-  #   "guesses_left": 8
-  #   "guessed_letters": []
-  #   "wrong_letters": []
-  #  }
+  # Saves are serialized in JSON format. This would have been much easier in YAML(Yaml.dump(self))
   def save_game
-    puts 'Enter save name'
-    file_name = gets.chomp + '.JSON'
+    input_save_name
     begin
       save_file = File.new(file_name, 'w')
       save_file.puts generate_save
@@ -115,15 +107,15 @@ class Game
     end
   end
 
-  # Dump contents of the game objects into a JSON string
+  # Dump contents of the game objects into a JSON string.
   def generate_save
     JSON.dump({
-      :secret_word => @secret_word,
-      :guessed_word => @guessed_word,
-      :guesses_left => @guesses_left,
-      :guessed_letters => @guessed_letters,
-      :wrong_letters => @wrong_letters
-    })
+                :secret_word => @secret_word,
+                :guessed_word => @guessed_word,
+                :guesses_left => @guesses_left,
+                :guessed_letters => @guessed_letters,
+                :wrong_letters => @wrong_letters
+              })
   end
 
   # Checks if the given input string is in the secret word
@@ -136,5 +128,10 @@ class Game
       @guesses_left -= 1
       @wrong_letters.push(input)
     end
+  end
+
+  private_class_method def self.input_save_name
+    print 'Enter save name:'
+    gets.chomp
   end
 end
