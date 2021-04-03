@@ -41,7 +41,7 @@ class Game
 
   # Read a save file, and attempt to initialize a game from it
   def self.load_game
-    input_save_name
+    file_name = Game.input_save_name
     begin
       save = File.open(file_name, 'r')
       save_json = JSON.parse(save.read ,{symbolize_names: true} )
@@ -53,6 +53,13 @@ class Game
     rescue KeyError
       puts "#{file_name} is not a valid savefile"
     end
+  end
+
+  # HACK?: I don't want this to be public, but not sure how to make it private and be able to call
+  # It from both an instance of the class and as a class method.
+  def self.input_save_name
+    print 'Enter save name:'
+    "#{gets.chomp}.JSON"
   end
 
   private
@@ -96,7 +103,7 @@ class Game
 
   # Saves are serialized in JSON format. This would have been much easier in YAML(Yaml.dump(self))
   def save_game
-    input_save_name
+    file_name = Game.input_save_name
     begin
       save_file = File.new(file_name, 'w')
       save_file.puts generate_save
@@ -128,10 +135,5 @@ class Game
       @guesses_left -= 1
       @wrong_letters.push(input)
     end
-  end
-
-  private_class_method def self.input_save_name
-    print 'Enter save name:'
-    gets.chomp
   end
 end
