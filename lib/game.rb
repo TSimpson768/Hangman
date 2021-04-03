@@ -1,4 +1,5 @@
 require 'json'
+require 'pry'
 class Game
 
   # This needs to load in dictonary.txt, and sample a random word between 5 and 12
@@ -36,6 +37,23 @@ class Game
       break if game_won?
     end
     game_over # Run any game over logic, and ask to play agian
+  end
+
+  # Read a save file, and attempt to initialize a game from it
+  def self.load_game
+    print 'Enter save name:'
+    file_name = gets.chomp + '.JSON'
+    begin
+      save = File.open(file_name, 'r')
+      save_json = JSON.parse(save.read ,{symbolize_names: true} )
+      save.close
+      Game.new(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
+               save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters)).play
+    rescue IOError, SystemCallError
+      puts 'File not found'
+    rescue KeyError
+      puts "#{file_name} is not a valid savefile"
+    end
   end
 
   private
@@ -86,7 +104,7 @@ class Game
   #  }
   def save_game
     puts 'Enter save name'
-    file_name = gets + '.JSON'
+    file_name = gets.chomp + '.JSON'
     begin
       save_file = File.new(file_name, 'w')
       save_file.puts generate_save
