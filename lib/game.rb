@@ -1,4 +1,4 @@
-
+require 'json'
 class Game
 
   # This needs to load in dictonary.txt, and sample a random word between 5 and 12
@@ -55,10 +55,11 @@ class Game
     input = gets.chomp.downcase
     if input == 'save'
       save_game
-    elsif input.match(/^[a-z]{1}$/)
+    elsif input.match(/^[a-z]{1}$/) && !@guessed_letters.include?(input)
       check_guess(input)
     else
       puts 'Invalid input'
+      print_guessed
       user_input
     end
   end
@@ -70,18 +71,46 @@ class Game
   def game_over
     puts "The secret word was #{@secret_word}"
     if game_won?
-      puts "Congratulations! You win!"
+      puts 'Congratulations! You win!'
     else
       puts 'Better luck next time'
     end
   end
 
+  # Saves are serialized in JSON format. I'm thinking
+  # { "secret_word": @secret_word
+  #   "guessed_word": @guessed_word
+  #   "guesses_left": 8
+  #   "guessed_letters": []
+  #   "wrong_letters": []
+  #  }
   def save_game
-    puts 'TODO'
+    puts 'Enter save name'
+    file_name = gets + '.JSON'
+    begin
+      save_file = File.new(file_name, 'w')
+      save_file.puts generate_save
+      save_file.close
+      puts 'Game saved!'
+    rescue IOError
+      puts 'Save failed'
+    end
+  end
+
+  # Dump contents of the game objects into a JSON string
+  def generate_save
+    JSON.dump({
+      :secret_word => @secret_word,
+      :guessed_word => @guessed_word,
+      :guesses_left => @guesses_left,
+      :guessed_letters => @guessed_letters,
+      :wrong_letters => @wrong_letters
+    })
   end
 
   # Checks if the given input string is in the secret word
   def check_guess(input)
+    @guessed_letters.push(input)
     if @secret_word.match?(input)
       @secret_word.split(//).each_with_index { |char, index| @guessed_word[index] = char if char == input }
     else
