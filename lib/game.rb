@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'pry'
 class Game
-
   # This needs to load in dictonary.txt, and sample a random word between 5 and 12
   # characters in length, Create an array of guessed letters, initially empty, and set
   # number of guesses left to 8?
   # For guessing - Either Print any letter in word present in guesses, and print wrong guesses
   # Below
-  # Or have a second string guessed_word "______" of same length. When a letter present in the 
-  # word is guessed, sub it into guessed_word. If not, add it to an array of wrong guesses, and 
+  # Or have a second string guessed_word "______" of same length. When a letter present in the
+  # word is guessed, sub it into guessed_word. If not, add it to an array of wrong guesses, and
   # Decrement guesses_left. Save guesses made and wrong guesses
 
   # Also need to be able to set these three from a save file (probably JSON)
@@ -44,7 +45,7 @@ class Game
     file_name = Game.input_save_name
     begin
       save = File.open(file_name, 'r')
-      save_json = JSON.parse(save.read ,{symbolize_names: true} )
+      save_json = JSON.parse(save.read, { symbolize_names: true })
       save.close
       Game.new(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
                save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters)).play
@@ -117,11 +118,11 @@ class Game
   # Dump contents of the game objects into a JSON string.
   def generate_save
     JSON.dump({
-                :secret_word => @secret_word,
-                :guessed_word => @guessed_word,
-                :guesses_left => @guesses_left,
-                :guessed_letters => @guessed_letters,
-                :wrong_letters => @wrong_letters
+                secret_word: @secret_word,
+                guessed_word: @guessed_word,
+                guesses_left: @guesses_left,
+                guessed_letters: @guessed_letters,
+                wrong_letters: @wrong_letters
               })
   end
 
