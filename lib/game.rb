@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'json'
-require 'pry'
 class Game
   # This needs to load in dictonary.txt, and sample a random word between 5 and 12
   # characters in length, Create an array of guessed letters, initially empty, and set
@@ -13,21 +12,39 @@ class Game
   # Decrement guesses_left. Save guesses made and wrong guesses
 
   # Also need to be able to set these three from a save file (probably JSON)
-  def initialize(secret_word, guessed_word, guesses_left = 8, guessed_letters = [], wrong_letters = [])
+  def initialize
+    main_menu
+  end
+
+  private
+
+  def set_up_game(secret_word, guessed_word, guesses_left = 8, guessed_letters = [], wrong_letters = [])
     @secret_word = secret_word
     @guessed_word = guessed_word
     @guesses_left = guesses_left
     @guessed_letters = guessed_letters
     @wrong_letters = wrong_letters
+    play
+  end
+
+  def main_menu
+    puts "Welcome to hangman! Would you like to\n1. Start a new game, or\n2. Load a saved game?"
+    case gets.chomp.to_i
+    when 1 then new_game
+    when 2 then load_game
+    else
+      puts 'Invalid input'
+      main_menu
+    end
   end
 
   # Create a new game object, with a secret word sampled from dictonary.txt
-  def self.new_game
+  def new_game
     dictonary = File.new('dictonary.txt', 'r')
     cleaned_dictonary = dictonary.readlines(chomp: true).select { |word| word.length >= 5 && word.length <= 12 }
     dictonary.close
     word = cleaned_dictonary.sample
-    Game.new(word, '_' * word.length)
+    set_up_game(word, '_' * word.length)
   end
 
   def play
@@ -37,18 +54,18 @@ class Game
       user_input # Save if save is inputed, otherwise check the guess
       break if game_won?
     end
-    game_over # Run any game over logic, and ask to play agian
+    game_over # Run any game over logic, and ask to play again
   end
 
   # Read a save file, and attempt to initialize a game from it
-  def self.load_game
-    file_name = Game.input_save_name
+  def load_game
+    file_name = input_save_name
     begin
       save = File.open(file_name, 'r')
       save_json = JSON.parse(save.read, { symbolize_names: true })
       save.close
-      Game.new(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-               save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters)).play
+      set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
+                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters)).play
     rescue IOError, SystemCallError
       puts 'File not found'
     rescue KeyError
@@ -58,12 +75,10 @@ class Game
 
   # HACK?: I don't want this to be public, but not sure how to make it private and be able to call
   # It from both an instance of the class and as a class method.
-  def self.input_save_name
+  def input_save_name
     print 'Enter save name:'
     "#{gets.chomp}.JSON"
   end
-
-  private
 
   def print_man
     puts "#{@guesses_left} wrong guesses left"
@@ -100,11 +115,13 @@ class Game
     else
       puts 'Better luck next time'
     end
+    puts 'Play again [y/n]'
+    Game.new if gets.chomp.downcase == 'y'
   end
 
   # Saves are serialized in JSON format. This would have been much easier in YAML(Yaml.dump(self))
   def save_game
-    file_name = Game.input_save_name
+    file_name = input_save_name
     begin
       save_file = File.new(file_name, 'w')
       save_file.puts generate_save
