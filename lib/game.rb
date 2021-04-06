@@ -61,22 +61,26 @@ class Game
   # Read a save file, and attempt to initialize a game from it
   def load_game
     print_saves
-    file_name = input_save_name
     begin
-      save = File.open(file_name, 'r')
-      save_json = JSON.parse(save.read, { symbolize_names: true })
-      save.close
-      set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
+      read_save
     rescue IOError, SystemCallError
       puts 'File not found'
+      load_game
     rescue KeyError
       puts "#{file_name} is not a valid savefile"
+      load_game
     end
   end
 
-  # HACK?: I don't want this to be public, but not sure how to make it private and be able to call
-  # It from both an instance of the class and as a class method.
+  def read_save
+    file_name = input_save_name
+    save = File.open(file_name, 'r')
+    save_json = JSON.parse(save.read, { symbolize_names: true })
+    save.close
+    set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
+                save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
+  end
+
   def input_save_name
     print 'Enter save name:'
     SAVE_FOLDER + "#{gets.chomp}.JSON"
