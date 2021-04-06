@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
 require 'json'
-class Game
-  # This needs to load in dictonary.txt, and sample a random word between 5 and 12
-  # characters in length, Create an array of guessed letters, initially empty, and set
-  # number of guesses left to 8?
-  # For guessing - Either Print any letter in word present in guesses, and print wrong guesses
-  # Below
-  # Or have a second string guessed_word "______" of same length. When a letter present in the
-  # word is guessed, sub it into guessed_word. If not, add it to an array of wrong guesses, and
-  # Decrement guesses_left. Save guesses made and wrong guesses
+# This needs to load in dictonary.txt, and sample a random word between 5 and 12
+# characters in length, Create an array of guessed letters, initially empty, and set
+# number of guesses left to 8?
+# For guessing - Either Print any letter in word present in guesses, and print wrong guesses
+# Below
+# Or have a second string guessed_word "______" of same length. When a letter present in the
+# word is guessed, sub it into guessed_word. If not, add it to an array of wrong guesses, and
+# Decrement guesses_left. Save guesses made and wrong guesses
 
-  # Also need to be able to set these three from a save file (probably JSON)
+# Also need to be able to set these three from a save file (probably JSON)
+class Game
+  SAVE_FOLDER = Dir.pwd + '/saves/'
   def initialize
     main_menu
   end
@@ -59,6 +60,7 @@ class Game
 
   # Read a save file, and attempt to initialize a game from it
   def load_game
+    print_saves
     file_name = input_save_name
     begin
       save = File.open(file_name, 'r')
@@ -77,7 +79,7 @@ class Game
   # It from both an instance of the class and as a class method.
   def input_save_name
     print 'Enter save name:'
-    "#{gets.chomp}.JSON"
+    SAVE_FOLDER + "#{gets.chomp}.JSON"
   end
 
   def print_man
@@ -115,7 +117,7 @@ class Game
     else
       puts 'Better luck next time'
     end
-    puts 'Play again [y/n]'
+    puts 'Play again? [y/n]'
     Game.new if gets.chomp.downcase == 'y'
   end
 
@@ -153,5 +155,11 @@ class Game
       @guesses_left -= 1
       @wrong_letters.push(input)
     end
+  end
+
+  # Prints all JSON files in the saves folder to the console
+  def print_saves
+    print 'Current saves:'
+    puts Dir.children(SAVE_FOLDER)
   end
 end
