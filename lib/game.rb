@@ -159,7 +159,7 @@ class Game
 
   # Prints all JSON files in the saves folder to the console
   def print_saves
-    print 'Current saves:'
-    puts Dir.children(SAVE_FOLDER)
+    puts 'Current saves:'
+    Dir.children(SAVE_FOLDER).each { |file| puts file.delete('.JSON') }
   end
 end
