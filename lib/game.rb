@@ -70,34 +70,6 @@ class Game
     game_over # Run any game over logic, and ask to play again
   end
 
-  # # Read a save file, and attempt to initialize a game from it
-  # def load_game
-  #   print_saves
-  #   begin
-  #     read_save
-  #   rescue IOError, SystemCallError
-  #     puts 'File not found'
-  #     load_game
-  #   rescue KeyError
-  #     puts "#{file_name} is not a valid savefile"
-  #     load_game
-  #   end
-  # end
-
-  # def read_save
-  #   file_name = input_save_name
-  #   save = File.open(file_name, 'r')
-  #   save_json = JSON.parse(save.read, { symbolize_names: true })
-  #   save.close
-  #   set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-  #               save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
-  # end
-
-  # def input_save_name
-  #   print 'Enter save name:'
-  #   SAVE_FOLDER + "#{gets.chomp}.JSON"
-  # end
-
   def print_man
     puts "#{@guesses_left} wrong guesses left"
   end
@@ -136,30 +108,6 @@ class Game
     puts 'Play again? [y/n]'
     Game.new if gets.chomp.downcase == 'y'
   end
-
-  # # Saves are serialized in JSON format. This would have been much easier in YAML(Yaml.dump(self))
-  # def save_game
-  #   file_name = input_save_name
-  #   begin
-  #     save_file = File.new(file_name, 'w')
-  #     save_file.puts generate_save
-  #     save_file.close
-  #     puts 'Game saved!'
-  #   rescue IOError
-  #     puts 'Save failed'
-  #   end
-  # end
-
-  # # Dump contents of the game objects into a JSON string.
-  # def generate_save
-  #   JSON.dump({
-  #               secret_word: @secret_word,
-  #               guessed_word: @guessed_word,
-  #               guesses_left: @guesses_left,
-  #               guessed_letters: @guessed_letters,
-  #               wrong_letters: @wrong_letters
-  #             })
-  # end
 
   # Checks if the given input string is in the secret word
   def check_guess(input)
