@@ -34,10 +34,9 @@ class Game
     puts "Welcome to hangman! Would you like to\n1. Start a new game, or\n2. Load a saved game?"
     case gets.chomp.to_i
     when 1 then new_game
-    when 2 
+    when 2
       save_json = load_game
-      set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
+      create_loaded_game(save_json)
     else
       puts 'Invalid input'
       main_menu
@@ -51,6 +50,16 @@ class Game
     dictonary.close
     word = cleaned_dictonary.sample
     set_up_game(word, '_' * word.length)
+  end
+
+  def create_loaded_game(save_json)
+    begin
+      set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
+                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
+    rescue KeyError
+      puts 'This savefile is invalid'
+      load_game
+    end
   end
 
   def play
