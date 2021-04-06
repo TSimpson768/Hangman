@@ -16,9 +16,6 @@ module Saves
     rescue IOError, SystemCallError
       puts 'File not found'
       load_game
-    rescue KeyError
-      puts "#{file_name} is not a valid savefile"
-      load_game
     end
   end
 
