@@ -67,7 +67,7 @@ class Game
       save_json = JSON.parse(save.read, { symbolize_names: true })
       save.close
       set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters)).play
+                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
     rescue IOError, SystemCallError
       puts 'File not found'
     rescue KeyError
