@@ -4,7 +4,7 @@ require 'json'
 
 # A module containing the logic relating to saving and loading games
 module Saves
-  SAVE_FOLDER = Dir.pwd + '/saves/'
+  SAVE_FOLDER = "#{Dir.pwd}/saves/"
 
   private
 

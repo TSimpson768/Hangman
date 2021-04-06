@@ -14,7 +14,7 @@ require_relative 'saves'
 # Also need to be able to set these three from a save file (probably JSON)
 class Game
   include Saves
-  SAVE_FOLDER = Dir.pwd + '/saves/'
+  SAVE_FOLDER = "#{Dir.pwd}/saves/"
   def initialize
     main_menu
   end
@@ -53,13 +53,11 @@ class Game
   end
 
   def create_loaded_game(save_json)
-    begin
-      set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
-                  save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
-    rescue KeyError
-      puts 'This savefile is invalid'
-      load_game
-    end
+    set_up_game(save_json.fetch(:secret_word), save_json.fetch(:guessed_word), save_json.fetch(:guesses_left),
+                save_json.fetch(:guessed_letters), save_json.fetch(:wrong_letters))
+  rescue KeyError
+    puts 'This savefile is invalid'
+    load_game
   end
 
   def play
